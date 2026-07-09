@@ -1,43 +1,78 @@
-plugins {
-    alias(libs.plugins.android.application)
-}
+apply plugin: 'com.android.application'
 
 android {
     namespace 'cn.cnguu.uniapp'
-    compileSdk 36
+
+    compileSdkVersion 36
+    buildToolsVersion '36.0.0'
 
     defaultConfig {
         applicationId "cn.cnguu.uniapp"
-        minSdk 23
-        targetSdk 36
+        minSdkVersion 23
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0.0"
+        multiDexEnabled true
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+    }
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        ndk {
-            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'
+    signingConfigs {
+        config {
+            keyAlias 'key'
+            keyPassword '123456'
+            storeFile file('key')
+            storePassword '123456'
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
     }
 
     buildTypes {
-        release {
+        debug {
+            signingConfig signingConfigs.config
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            signingConfig signingConfigs.config
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
+
+    aaptOptions {
+        additionalParameters '--auto-add-overlay'
+        ignoreAssetsPattern "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
     }
-    buildToolsVersion '36.0.0'
 }
 
 dependencies {
-    implementation libs.activity.ktx
-    implementation libs.appcompat
-    implementation libs.constraintlayout
-    implementation libs.material
-    testImplementation libs.junit
-    androidTestImplementation libs.espresso.core
-    androidTestImplementation libs.ext.junit
+    // --- 本地二进制依赖 (Local Binary Dependencies) ---
+    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'])
+
+    // --- AndroidX 核心与 UI 基础库 (AndroidX Core & UI) ---
+    implementation 'androidx.core:core:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.fragment:fragment:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'androidx.webkit:webkit:1.5.0'
+
+    // --- 图片加载：Fresco 系列 (Image Loading: Fresco) ---
+    implementation 'com.facebook.fresco:fresco:3.4.0'
+    implementation 'com.facebook.fresco:middleware:3.4.0'
+    implementation 'com.facebook.fresco:animated-gif:3.4.0'
+    implementation 'com.facebook.fresco:webpsupport:3.4.0'
+    implementation 'com.facebook.fresco:animated-webp:3.4.0'
+
+    // --- 图片加载：Glide 系列 (Image Loading: Glide) ---
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+
+    // --- 数据解析与工具类 (Data Parsing & Utilities) ---
+    implementation 'com.alibaba:fastjson:1.2.83'
+    implementation 'net.lingala.zip4j:zip4j:2.11.5'
 }
