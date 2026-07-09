@@ -4,32 +4,30 @@ plugins {
 
 android {
     namespace 'cn.cnguu.uniapp'
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk 36
 
     defaultConfig {
         applicationId "cn.cnguu.uniapp"
         minSdk 23
         targetSdk 36
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'
+        }
     }
 
     buildTypes {
         release {
-            optimization {
-                enable false
-            }
+            minifyEnabled false
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     buildToolsVersion '36.0.0'
 }
